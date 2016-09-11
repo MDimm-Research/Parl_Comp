@@ -1,0 +1,23 @@
+sudo: false
+language: scala
+scala:
+- 2.11.5
+jdk:
+- openjdk7
+script:
+- sbt ++$TRAVIS_SCALA_VERSION compile test:compile
+- sbt ++$TRAVIS_SCALA_VERSION test
+after_success:
+- |
+  test "${TRAVIS_PULL_REQUEST}" = 'false' && test "${TRAVIS_JDK_VERSION}" = 'openjdk7' && sbt 'project spray-socketio' 'set resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"' 'set credentials += Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", System.getenv("SONATYPE_USER"), System.getenv("SONATYPE_PASS"))' ++${TRAVIS_SCALA_VERSION} '+ publish'
+branches:
+  only:
+  - master
+env:
+  global:
+  - secure: fLcPdIjQbBb+TXd3/ICviHCUIrnN2Myn2EIh5D2ZYAxM6JsxpR5Dns9gqLVF8fPCdcEk33uDR6jQO1UIpIuclsysFTXnVZP9APTYinN44tn8iVAdSTsHge1DwpR3tElJGeRoGUNhuZXUp2I2EGCUdL/TNtj2r0kcbGinEiIbqQc=
+  - secure: ZoJklvurpmlMnzcLFuhFsf6asaAhaaVaFM2Qdcg2RSjQbzPvP8CFGji2cqGV+Ll3F+jmtlQX6vULQJa7gUohVwZiz2913tOqh5wcGXo/HPj/XcSzWlet2vfs82hFRxQMpNYomweexwuSfusCRpjx75m2+VcoZ7qvfupAY+Avms4=
+notifications:
+  email:
+  - dcaoyuan@wandoujia.com
+  - chenxingrun@wandoujia.com
